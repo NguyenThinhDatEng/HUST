@@ -32,10 +32,16 @@ int main()
 }
 
 /*
+x = a % m. Ta có a^b ≡ x^b (mod m)
+giam a tu 10^18 xuong x còn cỡ ~10^9
+
+Neu a ≡ b (mod m) va d la uoc chung cua a, b sao cho (d, m) = 1
+=> a/d ≡ b/d (mod m)                                                            (1)
+
 Dinh ly Fermat nho cho biet: a^p ≡ a(mod p) với a bat ki và p la so nguyen to,
-hay noi cach khac a^p-1 ≡ 1 (mod p),
+hay noi cach khac a^p-1 ≡ 1 (mod p),        (theo 1)
 hay a^q(p-1) ≡ 1^q ≡ 1 (mod p),
 hay a^(q(p-1) + r) = a^q(p-1) * a^r ≡ 1 * a^r (mod p) = a^r (mod p).
-Đặt r = b % (m - 1). Ta có x^b ≡ x^r (mod m) với m là số nguyen to.
+Đat r = b % (m - 1). Ta co x^b ≡ x^r (mod m) voi m la so nguyen to.
 Buoc nay giam b tu 10^18 xuong r con co ~10^9
 */
