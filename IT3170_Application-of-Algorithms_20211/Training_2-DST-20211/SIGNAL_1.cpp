@@ -22,9 +22,9 @@ int solve(int n, int b) {
             head.push_back({i, maxHead});
         maxHead = max(maxHead, a[i]);
     }
-
     if (head.empty())
         return -1;
+
     vector<element> tail;
     int maxTail = a[endArr];
     int limit = head[0].first;
