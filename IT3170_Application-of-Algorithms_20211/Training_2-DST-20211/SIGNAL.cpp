@@ -6,8 +6,7 @@ using namespace std;
 
 int solve(int n, int b) {
     int* a = new int[n];
-    int signalCutOff = 0;
-    int maxHead = a[0];
+    int signalCutOff = -1;
     int maxTail = 0;
 
     for (int i = 0; i < n; i++)
@@ -16,15 +15,17 @@ int solve(int n, int b) {
         maxTail = max(maxTail, a[i]);
     }
 
+    int maxHead = a[0];
     for (int i = 1; i < n - 1; i++)
         if (maxHead - a[i] >= b)
         {
-            if (maxHead > maxTail || a[i] > maxTail)
+            if (maxHead >= maxTail || a[i] >= maxTail)
             {
                 int *pTail = a + i + 1;
                 int j = 0;
                 maxTail = 0;
-                while (j < n)
+                int limit = n - i - 1;
+                while (j < limit)
                 {
                     maxTail = max(maxTail, pTail[j]);
                     j++;
