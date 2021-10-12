@@ -7,13 +7,21 @@ using namespace std;
 
 int main()
 {
-    int n = 20;
+    int n = 10;
     srand(time(NULL));
-    cout << n << " " << rand() % 10 + 10 << endl;
+    cout << n << endl;
     while (n > 0)
     {
-        cout << rand() % (30 - 1 + 1) + 1 << " ";
+        cout << rand() % (10 - 1 + 1) + 1 << " ";
         n--;
-    }   
+    }
+    cout << endl;
+    int t = 10;
+    cout << t << endl;
+    while (t > 0)
+    {
+        cout << rand() % (10 - 1 + 1) + 1 << " " << rand() % (10 - 1 + 1) + 1 << endl;
+        t--;
+    }
     return 0;
 }
