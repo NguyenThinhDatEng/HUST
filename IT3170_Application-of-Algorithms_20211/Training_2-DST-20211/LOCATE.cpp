@@ -13,7 +13,7 @@ void insert(vector<vt>& VTCP, int x, int y)
     int size = VTCP.size();
     if (size == 0)
     {
-        VTCP.push_back({{x, y}, 1});
+        VTCP.push_back({{x, y}, 1});z
         return;
     }
     
