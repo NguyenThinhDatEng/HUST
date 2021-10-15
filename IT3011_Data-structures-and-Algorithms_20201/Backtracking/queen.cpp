@@ -10,7 +10,7 @@ int n;
 
 void display()
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < n; i++)
         cout << x[i] + 1 << " ";
     cout << endl;
 }
@@ -30,12 +30,12 @@ bool isInvalid(int i, int j)
 }
 
 void TRY(int j){
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < n; i++)
     {
         if (isInvalid(i, j))
         {
             x[j] = i;
-            if (j == 7)
+            if (j == n - 1)
                 display();
             else
                 TRY(j + 1);
@@ -46,6 +46,7 @@ void TRY(int j){
 
 int main()
 {
+    cin >> n;
     x = new int[n];
     TRY(0);
     return 0;
