@@ -3,6 +3,7 @@
 #include<vector>
 #include<string.h>
 #include<math.h>
+#include<set>
 
 using namespace std;
 
@@ -15,24 +16,24 @@ int main()
     int a, b, c;    // 1 <= a, b, c <= n
     while (t > 0)
     {
-        vector<int> bi;
+        set<int> bi;
         cin >> n >> m;
         while (m > 0)
         {
             cin >> a >> b >> c;
-            bi.push_back(b);
+            bi.insert(b);
             m--;
         }
 
-        sort(bi.begin(), bi.end());
-        int check = 0;
+        set<int>:: iterator itr = bi.begin();
         int size = bi.size();
         int i = 1;
         while(i <= size)
         {
-            if (bi[i - 1] != i)
+            if (*itr != i)
                 break;
             i++;
+            itr++;
         }   
 
         for (int j = 1; j <= n; j++)
