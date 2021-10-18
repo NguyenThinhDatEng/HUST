@@ -1,16 +1,22 @@
 #include<iostream>
-#include<iomanip>
+#include<algorithm>
+#include<vector>
+#include<string.h>
 #include<math.h>
-#include<ctime>
+#include<time.h>
+#include<cstdlib>
+
 using namespace std;
 
 int main()
 {
-    int t = 10;
     srand(time(NULL));
-    while(t > 0)
+    int t = rand() % (15 - 5 + 1) + 5;
+    cout << t << endl;
+    while (t > 0)
     {
-        cout << rand() % (100000 - 25 + 1) + 1 << endl;
+        int n = rand() % (15 - 1 + 1) - 1;
+        cout << n << " ";
         t--;
     }
     return 0;
