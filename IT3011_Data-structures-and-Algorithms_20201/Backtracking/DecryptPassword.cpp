@@ -5,30 +5,44 @@
 #include<math.h>
 using namespace std;
 
+/**
+ *  send
+ *  +
+ *  more
+ * -----
+ * money
+ */
+
 int x[4];   // contain result letters
-int existed[10];
-string send = "2817";
+int existed[10];    // mark from 0 to 9
+string send = "2817";   // an example for result (not important)
 string more = "0368";
 string money = "03185";
 
 void solve()
 {
+    // get the first 4 numbers out of 7 numbers
     send = "";
     for (int j = 0; j < 4; j++)
         send += to_string(x[j]);
 
+    // get the last 3 numbers out of 7 numbers
     more = "";
     for (int j = 4; j < 7; j++)
         more += to_string(x[j]);
-    more += send[1];
+    more += send[1];    // get 'e' of send to complete more
 
+    // complete the first 4 numbers of money
     money = "";
     money += more[0];
     money += more[1];
     money += send[2];
     money += send[1];
+
+    // convert string to int
     int a = atoi(send.c_str());
     int b = atoi(more.c_str());
+    // Algorithm
     for (int j = 0; j < 10; j++)
     {
         if (existed[j] == 0)
@@ -72,12 +86,4 @@ int main()
     TRY(0, 7);
     return 0;
 }
-
-/**
- *  send
- *  +
- *  more
- * -----
- * money
- */
 
