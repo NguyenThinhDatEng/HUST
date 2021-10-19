@@ -3,47 +3,51 @@
 #include<vector>
 #include<string.h>
 #include<math.h>
+#include<deque>
 
 using namespace std;
 
-void solved(vector<int> walruses, int n)
+void solved(deque<int> walruses, int n)
 {
     vector<int> indexOfMin;
     int min = walruses[n - 1] + 1;
-    for (int i = n - 1; i >= 0; i--)
+    // for (int i = n - 1; i >= 0; i--)
+    // {
+    //     if (min >= walruses[i])
+    //     {
+    //         indexOfMin.push_back(i);
+    //         min = walruses[i];
+    //     }
+    // }
+
+    int i;
+    while (!walruses.empty())
     {
-        if (min >= walruses[i])
+        i = walruses.size() - 1;
+        while (i >= 0)
         {
-            indexOfMin.push_back(i);
-            min = walruses[i];
+            if (min >= walruses[i])
+            {
+                // indexOfMin.push_back(i);
+                min = walruses[i];
+                if (walruses.front() > min)
+                {
+                    walruses.pop_front();
+                    cout << i - 1 << " ";
+                    break;
+                }
+            }
+            i--;
         }
     }
-    
-    int size = indexOfMin.size();
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            if (walruses[i] > walruses[indexOfMin[j]])
-            {
-                cout << indexOfMin[j] - i - 1 << " ";
-                break;
-            }
-            if (i == indexOfMin[j])
-            {
-                cout << -1 << " ";
-                size--;
-                break;
-            }
-        }
-    }
+
 }
 
 int main()
 {
     int t;
     cin >> t;
-    vector<int> walruses;
+    deque<int> walruses;
 
     int tmp;
     for (int i = 0; i < t; i++)
