@@ -18,7 +18,7 @@ void TRY(int k, int wOfTeam, int numberMembers)
         return;
     if (k == half_n)
     {
-        int tmp = abs(totalWeight / 2 - wOfTeam);   // new amount of difference
+        int tmp = abs(totalWeight - wOfTeam * 2);   // new amount of difference
         if (amountOfDifference > tmp)
         {
             amountOfDifference = tmp;
@@ -51,10 +51,7 @@ int main()
 
     TRY(0, 0, 0);
 
-    if (amountOfDifference)
-        cout << amountOfDifference * 2;
-    else
-        cout << 1;
+    cout << amountOfDifference;
 
     return 0;
 }
