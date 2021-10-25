@@ -32,8 +32,8 @@ int main()
 }
 
 /*
-x = a % m. Ta có a^b ≡ x^b (mod m)
-giam a tu 10^18 xuong x còn cỡ ~10^9
+x = a % m. Ta co a^b ≡ x^b (mod m)
+giam a tu 10^18 xuong x con co ~10^9
 
 Neu a ≡ b (mod m) va d la uoc chung cua a, b sao cho (d, m) = 1
 => a/d ≡ b/d (mod m)                                                            (1)
