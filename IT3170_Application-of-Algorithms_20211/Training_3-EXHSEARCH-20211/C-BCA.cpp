@@ -14,26 +14,6 @@ vector<vector<int>> teacher;    // trace
 int minOf_maxLoad = INT_MAX;
 int maxLoad = 0;
 
-bool check(int newCourse, int teacher_name)
-{
-    // suitable course for each teacher
-    if (preferenceList[teacher_name][newCourse] == 0)
-        return false;
-
-    // check conflict
-    int size = teacher[teacher_name].size();
-    int selectedCourse;
-    for (int i = 0; i < size; i++)
-    {   
-        selectedCourse = teacher[teacher_name][i];
-        if (pairsOfConflicting[newCourse][selectedCourse] == 1)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 void input() {
     cin >> m;
     cin >> n;
@@ -59,6 +39,26 @@ void input() {
         cin >> firstCou >> secondCou;
         pairsOfConflicting[firstCou][secondCou] = pairsOfConflicting[secondCou][firstCou] = 1;
     }
+}
+
+bool check(int newCourse, int teacher_name)
+{
+    // suitable course for each teacher
+    if (preferenceList[teacher_name][newCourse] == 0)
+        return false;
+
+    // check conflict
+    int size = teacher[teacher_name].size();
+    int selectedCourse;
+    for (int i = 0; i < size; i++)
+    {   
+        selectedCourse = teacher[teacher_name][i];
+        if (pairsOfConflicting[newCourse][selectedCourse] == 1)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void TRY(int k)
