@@ -12,10 +12,10 @@ int k; // 1 ≤ k ≤ 10
 int _2nPlus1;
 vector<vector<int>> c; // distance
 vector<int> trace;
-int existed[23]; // mark the local visited
-int bus[12];     // mark passenger is on bus
-int minDis = INT_MAX;
-int minC = INT_MAX;
+int existed[23];      // mark the local visited
+int bus[12];          // mark the passengers is on bus
+int minDis = INT_MAX; // result
+int minC = INT_MAX;   // minimum cost of c
 
 void input();
 
@@ -23,28 +23,25 @@ void display();
 
 bool check(int nextLocal, int passengersOnBus)
 {
+    // Ex n = 3, k = 2
     if (existed[nextLocal])
         return false;
 
-    if (passengersOnBus == 0)
-        if (nextLocal <= n)
-            return true;
-        else
-            return false;
-
-    if (nextLocal > n && bus[nextLocal - n] == 1)
+    if (nextLocal > n)
     {
-        return true;
+        if (passengersOnBus == 0) // 1 4 5 -> wrong
+            return false;
+        if (bus[nextLocal - n] == 1) // nextLocal - n => passenger
+            return true;
+        return false;
     }
 
-    if (passengersOnBus == k && nextLocal <= n)
+    if (passengersOnBus == k && nextLocal <= n) // 1 2 3 -> wrong
     {
         return false;
     }
 
-    if (nextLocal <= n)
-        return true;
-    return false;
+    return true; // except for all the above cases
 }
 
 void TRY(int t, int preLocal, int distance, int passengersOnBus)
@@ -54,7 +51,7 @@ void TRY(int t, int preLocal, int distance, int passengersOnBus)
 
     if (t == _2nPlus1)
     {
-        //display();
+        // display();
         minDis = min(minDis, distance + c[preLocal][0]);
         return;
     }
