@@ -1,19 +1,19 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-#include<string.h>
-#include<math.h>
-#include<iomanip>
-#include<deque>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <math.h>
+#include <iomanip>
+#include <deque>
 using namespace std;
 
-int n;  // 1 ≤ n ≤ 11
-int k;  // 1 ≤ k ≤ 10
+int n; // 1 ≤ n ≤ 11
+int k; // 1 ≤ k ≤ 10
 int _2nPlus1;
-vector<vector<int>> c;  // distance 
+vector<vector<int>> c; // distance
 vector<int> trace;
-int existed[23];    // mark the local visited
-int bus[12];        // mark passenger is on bus
+int existed[23]; // mark the local visited
+int bus[12];     // mark passenger is on bus
 int minDis = INT_MAX;
 int minC = INT_MAX;
 
@@ -32,37 +32,18 @@ bool check(int nextLocal, int passengersOnBus)
         else
             return false;
 
-    if (passengersOnBus == k)
+    if (nextLocal > n && bus[nextLocal - n] == 1)
     {
-        if (nextLocal <= n)
-            return false;
-        for (int i = 1; i <= n; i++)
-        {
-            if (bus[i] == 1)
-            {
-                if (nextLocal == i + n)
-                {
-                    return true;
-                }
-            }
-        }
+        return true;
+    }
+
+    if (passengersOnBus == k && nextLocal <= n)
+    {
         return false;
     }
 
-     for (int i = 1; i <= n; i++)
-    {
-        if (bus[i] == 1)
-        {
-            if (nextLocal == i + n)
-            {
-                return true;
-            }
-        }
-        if (nextLocal <= n)
-        {
-            return true;
-        }
-    }
+    if (nextLocal <= n)
+        return true;
     return false;
 }
 
@@ -70,9 +51,10 @@ void TRY(int t, int preLocal, int distance, int passengersOnBus)
 {
     if (distance + minC * (_2nPlus1 - t + 1) > minDis)
         return;
-    
+
     if (t == _2nPlus1)
     {
+        //display();
         minDis = min(minDis, distance + c[preLocal][0]);
         return;
     }
@@ -106,14 +88,15 @@ void TRY(int t, int preLocal, int distance, int passengersOnBus)
 int main()
 {
     input();
-    
+
     TRY(1, 0, 0, 0);
 
     cout << minDis;
     return 0;
 }
 
-void input() {
+void input()
+{
     cin >> n;
     cin >> k;
     _2nPlus1 = 2 * n + 1;
