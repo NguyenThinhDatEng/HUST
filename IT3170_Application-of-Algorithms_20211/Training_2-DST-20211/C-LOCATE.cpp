@@ -1,60 +1,62 @@
-#include<iostream>
-#include<iomanip>
-#include<math.h>
-#include<vector>
+#include <iostream>
+#include <iomanip>
+#include <math.h>
+#include <vector>
 using namespace std;
 using coordinates = pair<int, int>;
 using vt = pair<coordinates, int>;
 
 int maxMoved = 0;
+int size;
+int i;
+bool existed;
+int preX, preY;
 
-void insert(vector<vt>& VTCP, int x, int y)
+void insert(vector<vt> &VTCP, int x, int y)
 {
-    int size = VTCP.size();
-    if (size == 0)
+    size = VTCP.size();
+    i = 0;
+    existed = false;
+    while (i < size)
     {
-        VTCP.push_back({{x, y}, 1});z
-        return;
-    }
-    
-    int i = 0;
-    bool exists = false;
-    while(i < size)
-    {
-        if (x == VTCP[i].first.first)
-            if (y == VTCP[i].first.second)
+        preX = VTCP[i].first.first;
+        preY = VTCP[i].first.second;
+        if (x == preX)
+            if (y == preY)
             {
-                exists = true;
-                break;
+                VTCP[i].second++;
+                maxMoved = max(maxMoved, VTCP[i].second);
+                return;
             }
-            else
-                if (y < VTCP[i].first.second)
-                    break;
-        if (x < VTCP[i].first.first)
+            else if (y < preY)
+                break;
+
+        if (x < preX)
             break;
         i++;
     }
 
-    if (exists)
-    {
-        VTCP[i].second++;
-        maxMoved = max(maxMoved, VTCP[i].second);
-    }
-    else
-        VTCP.insert(VTCP.begin() + i, 1, {{x, y}, 1});
+    VTCP.insert(VTCP.begin() + i, 1, {{x, y}, 1});
 }
 
 int main()
 {
+    ios_base ::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+
     int T;
     cin >> T;
-    int L, C;   // 1≤ L, C ≤1000
+    int L, C; // 1≤ L, C ≤1000
+    vector<coordinates> first;
+    vector<coordinates> second;
+    int sizeF, sizeS;
+    vector<vt> VTCP;
+    int x, y;
 
     while (T > 0)
     {
         cin >> L >> C;
-        vector<coordinates> first;
-        vector<coordinates> second;
 
         int one;
         for (int i = 0; i < L; i++)
@@ -63,7 +65,7 @@ int main()
                 cin >> one;
                 if (one)
                     first.push_back({i, j});
-            }        
+            }
 
         for (int i = 0; i < L; i++)
             for (int j = 0; j < C; j++)
@@ -72,18 +74,25 @@ int main()
                 if (one)
                     second.push_back({i, j});
             }
-        
-        int sizeF = first.size();
-        int sizeS = second.size();
-        // for (int i = 0; i < sizeF; i++)
-        //     cout << "{" << first[i].first << ", " << first[i].second << "}" << endl;
-        
-        vector<vt> VTCP;
+
+        sizeF = first.size();
+        sizeS = second.size();
+
         maxMoved = 0;
-        for (int i = 0; i < sizeF; i++)
+        // VTCP is empty
+        x = second[0].first - first[0].first;
+        y = second[0].second - first[0].second;
+        VTCP.push_back({{x, y}, 1});
+        for (int j = 1; j < sizeS; j++)
         {
-            int x;
-            int y;
+            x = second[j].first - first[0].first;
+            y = second[j].second - first[0].second;
+            insert(VTCP, x, y);
+        }
+
+        // i = 1 -> sizeF, j = 0 -> sizeS
+        for (int i = 1; i < sizeF; i++)
+        {
             for (int j = 0; j < sizeS; j++)
             {
                 x = second[j].first - first[i].first;
@@ -92,9 +101,9 @@ int main()
             }
         }
 
-        // for (int i = 0; i < VTCP.size(); i++)
-        //     cout << "{" << VTCP[i].first.first << ", " << VTCP[i].first.second << "}" << ", " << VTCP[i].second << endl;
-
+        first.clear();
+        second.clear();
+        VTCP.clear();
         cout << maxMoved << endl;
         T--;
     }
