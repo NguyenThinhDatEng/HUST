@@ -8,15 +8,12 @@ using vt = pair<coordinates, int>;
 
 int maxMoved = 0;
 int size;
-int i;
-bool existed;
 int preX, preY;
 
 void insert(vector<vt> &VTCP, int x, int y)
 {
     size = VTCP.size();
-    i = 0;
-    existed = false;
+    int i = 0;
     while (i < size)
     {
         preX = VTCP[i].first.first;
