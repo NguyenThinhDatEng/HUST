@@ -1,108 +1,130 @@
 #include <iostream>
-#include <iomanip>
-#include <math.h>
+#include <algorithm>
 #include <vector>
+#include <string.h>
+#include <math.h>
+#include <map>
+
 using namespace std;
-using coordinates = pair<int, int>;
-using vt = pair<coordinates, int>;
+using point = pair<int, int>;
 
-int maxMoved = 0;
-int size;
-int preX, preY;
+vector<int> numberOf_vtcp;
+int existedIndex = 0;
+int rs;
 
-void insert(vector<vt> &VTCP, int x, int y)
+int binarySearch(vector<point> &VTCP, point p, int l, int r)
 {
-    size = VTCP.size();
-    int i = 0;
-    while (i < size)
+    int mid;
+    if (r >= l)
     {
-        preX = VTCP[i].first.first;
-        preY = VTCP[i].first.second;
-        if (x == preX)
-            if (y == preY)
-            {
-                VTCP[i].second++;
-                maxMoved = max(maxMoved, VTCP[i].second);
-                return;
-            }
-            else if (y < preY)
-                break;
+        mid = (l + r) / 2;
+        point element = VTCP[mid];
+        if (element == p)
+        {
+            existedIndex = mid;
+            return -1;
+        }
 
-        if (x < preX)
-            break;
-        i++;
+        if (element > p)
+        {
+            return binarySearch(VTCP, p, l, mid - 1);
+        }
+
+        if (element < p)
+        {
+            return binarySearch(VTCP, p, mid + 1, r);
+        }
     }
-
-    VTCP.insert(VTCP.begin() + i, 1, {{x, y}, 1});
+    if (l == mid)
+        return mid;
+    return l;
 }
 
+void solve(vector<point>& VTCP, vector<point>& firstArr, vector<point>& secondArr)
+{
+    int sizeF = firstArr.size();
+    int sizeS = secondArr.size();
+    point vtcp;
+
+    for (int i = 0; i < sizeF; i++)
+    {
+        for (int j = 0; j < sizeS; j++)
+        {
+            vtcp.first = firstArr[i].first - secondArr[j].first;
+            vtcp.second = firstArr[i].second - secondArr[j].second;
+            int index = binarySearch(VTCP, vtcp, 0, VTCP.size() - 1);
+            if (index == -1)
+            {
+                numberOf_vtcp[existedIndex]++;
+                rs = max(rs, numberOf_vtcp[existedIndex]);
+            }
+            else
+            {
+                VTCP.insert(VTCP.begin() + index, 1, vtcp);
+                numberOf_vtcp.insert(numberOf_vtcp.begin() + index, 1, 1);
+            }
+        }       
+    }
+}
+
+void input(int &L, int &C, vector<point> &firstArr, vector<point> &secondArr)
+{
+    // L is No. of lines
+    // C is No. of columns
+    cin >> L >> C;
+
+    int binary;
+    // input data for first array
+    for (int i = 0; i < L; i++)
+        for (int j = 0; j < C; j++)
+        {
+            cin >> binary;
+            if (binary)
+            {
+                firstArr.push_back({i, j});
+            }
+        }
+
+    // input data for second array
+    for (int i = 0; i < L; i++)
+        for (int j = 0; j < C; j++)
+        {
+            cin >> binary;
+            if (binary)
+            {
+                secondArr.push_back({i, j});
+            }
+        }
+}
 int main()
 {
     ios_base ::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-
-    int T;
-    cin >> T;
-    int L, C; // 1≤ L, C ≤1000
-    vector<coordinates> first;
-    vector<coordinates> second;
-    int sizeF, sizeS;
-    vector<vt> VTCP;
-    int x, y;
-
-    while (T > 0)
+    int t; // No. of test cases
+    cin >> t;
+    int L, C; // 1≤L,C≤1000
+    vector<point> firstArr, secondArr;
+    vector<point> VTCP;
+    while (t > 0)
     {
-        cin >> L >> C;
+        input(L, C, firstArr, secondArr);
 
-        int one;
-        for (int i = 0; i < L; i++)
-            for (int j = 0; j < C; j++)
-            {
-                cin >> one;
-                if (one)
-                    first.push_back({i, j});
-            }
+        // prepare to algorithm
+        VTCP.push_back({0, 0});
+        numberOf_vtcp.resize(1);
 
-        for (int i = 0; i < L; i++)
-            for (int j = 0; j < C; j++)
-            {
-                cin >> one;
-                if (one)
-                    second.push_back({i, j});
-            }
+        // reset rs
+        rs = 0;
+        solve(VTCP, firstArr, secondArr);
 
-        sizeF = first.size();
-        sizeS = second.size();
+        cout << rs << endl;
 
-        maxMoved = 0;
-        // VTCP is empty
-        x = second[0].first - first[0].first;
-        y = second[0].second - first[0].second;
-        VTCP.push_back({{x, y}, 1});
-        for (int j = 1; j < sizeS; j++)
-        {
-            x = second[j].first - first[0].first;
-            y = second[j].second - first[0].second;
-            insert(VTCP, x, y);
-        }
-
-        // i = 1 -> sizeF, j = 0 -> sizeS
-        for (int i = 1; i < sizeF; i++)
-        {
-            for (int j = 0; j < sizeS; j++)
-            {
-                x = second[j].first - first[i].first;
-                y = second[j].second - first[i].second;
-                insert(VTCP, x, y);
-            }
-        }
-
-        first.clear();
-        second.clear();
+        firstArr.clear();
+        secondArr.clear();
+        numberOf_vtcp.clear();
         VTCP.clear();
-        cout << maxMoved << endl;
-        T--;
+        t--;
     }
     return 0;
 }
