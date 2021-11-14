@@ -3,69 +3,34 @@
 #include <vector>
 #include <string.h>
 #include <math.h>
-#include <map>
 
 using namespace std;
 using point = pair<int, int>;
 
-int existedIndex = 0;
 int rs;
 
-int binarySearch(vector<point> &VTCP, point p, int l, int r)
+void solve(vector<point> &firstArr, vector<point> &secondArr)
 {
-    int mid;
-    if (r >= l)
-    {
-        mid = (l + r) / 2;
-        point element = VTCP[mid];
-        if (element == p)
-        {
-            existedIndex = mid;
-            return -1;
-        }
+    // initialize VTCP
+    vector<vector<int>> VTCP;
+    VTCP.resize(2000); // x is the coordinates of vtcp, x belongs to [-999, 999]
+    for (int i = 0; i < 2000; i++)
+        VTCP[i].resize(2000); // y is the juxtaposition of vtcp, y belongs to [-999, 999]
 
-        if (element > p)
-        {
-            return binarySearch(VTCP, p, l, mid - 1);
-        }
-
-        if (element < p)
-        {
-            return binarySearch(VTCP, p, mid + 1, r);
-        }
-    }
-    // if vtcp is not existed, return local to insert
-    if (l == mid)
-        return mid;
-    return l;
-}
-
-void solve(vector<point> &VTCP, vector<int> &numberOf_vtcp, vector<point> &firstArr, vector<point> &secondArr)
-{
     int sizeF = firstArr.size();
     int sizeS = secondArr.size();
-    point vtcp;
-
+    int x, y;
     for (int i = 0; i < sizeF; i++)
     {
         for (int j = 0; j < sizeS; j++)
         {
-            vtcp.first = firstArr[i].first - secondArr[j].first;
-            vtcp.second = firstArr[i].second - secondArr[j].second;
-            int index = binarySearch(VTCP, vtcp, 0, VTCP.size() - 1);
-            if (index == -1)
-            {
-                numberOf_vtcp[existedIndex]++;
-                rs = max(rs, numberOf_vtcp[existedIndex]);
-            }
-            else
-            {
-                // vtcp is not existed, insert at index
-                VTCP.insert(VTCP.begin() + index, 1, vtcp);
-                numberOf_vtcp.insert(numberOf_vtcp.begin() + index, 1, 1);
-            }
+            x = firstArr[i].first - secondArr[j].first + 999;   // x >= 0
+            y = firstArr[i].second - secondArr[j].second + 999; // y >= 0
+            VTCP[x][y]++;
+            rs = max(VTCP[x][y], rs);
         }
     }
+    VTCP.clear();
 }
 
 void input(int &L, int &C, vector<point> &firstArr, vector<point> &secondArr)
@@ -97,6 +62,7 @@ void input(int &L, int &C, vector<point> &firstArr, vector<point> &secondArr)
             }
         }
 }
+
 int main()
 {
     ios_base ::sync_with_stdio(0);
@@ -104,29 +70,21 @@ int main()
     cout.tie(0);
     int t; // No. of test cases
     cin >> t;
-    int L, C; // 1≤L,C≤1000
+    int L, C; // 1 <= L, C <= 1000
+
     vector<point> firstArr, secondArr;
-    vector<point> VTCP;
-    vector<int> numberOf_vtcp;
     while (t > 0)
     {
         input(L, C, firstArr, secondArr);
 
-        // prepare to algorithm
-        VTCP.push_back({0, 0});
-        numberOf_vtcp.resize(1);
-
         // reset rs
         rs = 0;
-        solve(VTCP, numberOf_vtcp, firstArr, secondArr);
+        solve(firstArr, secondArr);
 
         cout << rs << endl;
-
         // reset vector
         firstArr.clear();
         secondArr.clear();
-        numberOf_vtcp.clear();
-        VTCP.clear();
         t--;
     }
     return 0;
