@@ -8,7 +8,6 @@
 using namespace std;
 using point = pair<int, int>;
 
-vector<int> numberOf_vtcp;
 int existedIndex = 0;
 int rs;
 
@@ -35,12 +34,13 @@ int binarySearch(vector<point> &VTCP, point p, int l, int r)
             return binarySearch(VTCP, p, mid + 1, r);
         }
     }
+    // if vtcp is not existed, return local to insert
     if (l == mid)
         return mid;
     return l;
 }
 
-void solve(vector<point>& VTCP, vector<point>& firstArr, vector<point>& secondArr)
+void solve(vector<point> &VTCP, vector<int> &numberOf_vtcp, vector<point> &firstArr, vector<point> &secondArr)
 {
     int sizeF = firstArr.size();
     int sizeS = secondArr.size();
@@ -60,10 +60,11 @@ void solve(vector<point>& VTCP, vector<point>& firstArr, vector<point>& secondAr
             }
             else
             {
+                // vtcp is not existed, insert at index
                 VTCP.insert(VTCP.begin() + index, 1, vtcp);
                 numberOf_vtcp.insert(numberOf_vtcp.begin() + index, 1, 1);
             }
-        }       
+        }
     }
 }
 
@@ -106,6 +107,7 @@ int main()
     int L, C; // 1≤L,C≤1000
     vector<point> firstArr, secondArr;
     vector<point> VTCP;
+    vector<int> numberOf_vtcp;
     while (t > 0)
     {
         input(L, C, firstArr, secondArr);
@@ -116,10 +118,11 @@ int main()
 
         // reset rs
         rs = 0;
-        solve(VTCP, firstArr, secondArr);
+        solve(VTCP, numberOf_vtcp, firstArr, secondArr);
 
         cout << rs << endl;
 
+        // reset vector
         firstArr.clear();
         secondArr.clear();
         numberOf_vtcp.clear();
