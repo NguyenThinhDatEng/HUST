@@ -35,7 +35,7 @@ int main()
         if (s[0] != '/')    // ".." -> "/.."
             s = '/' + s;
         else
-            path = "/";
+            path = "/"; // return root folder
         int length = s.length();
 
         // get name of folders
