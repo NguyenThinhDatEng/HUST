@@ -2,8 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
-#include <iomanip>
-#include <set>
+#include <iomanip>  
 #include <cstring>
 using namespace std;
 
@@ -15,7 +14,7 @@ int main()
     // instance variable
     int n;  // (1 ≤ n ≤ 50) — the number of commands.
     cin >> n;
-    string s;
+    string s;   // length of s belongs to [1, 200]
     getline(cin, s);
     string path = "/";  // cd path
     vector<string> nameFolder;  // save name of folders
@@ -23,7 +22,7 @@ int main()
     {
         getline(cin, s);
         // pwd
-        if (s.compare("pwd") == 0)
+        if (s == "pwd")
         {
             cout << path << endl;
             n--;
@@ -35,15 +34,9 @@ int main()
         s = s.substr(3); // revoke "cd "
         if (s[0] != '/')    // ".." -> "/.."
             s = '/' + s;
-        int length = s.length();
-
-        if (length == 1)    // "cd /"
-        {
+        else
             path = "/";
-            nameFolder.clear();
-            n--;
-            continue;
-        }
+        int length = s.length();
 
         // get name of folders
         for (int i = 0; i < length; i++)
@@ -59,9 +52,9 @@ int main()
         // algo
         for (string folder : nameFolder)
         {
-            if (folder.compare("..") == 0)
+            if (folder == "..")
             {
-                if (path.size() != 1)
+                if (path.length() != 1)
                 {
                     path.pop_back();
                     while (path.back() != '/')
