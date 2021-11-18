@@ -4,42 +4,21 @@
 #include <cstring>
 #include <math.h>
 #include <iomanip>
-#include <set>
+#include <stack>
 #include <stdio.h>
 using namespace std;
 // FILE* inp, *out;
 
 void solve(string s)
 {
-    int i = 0;
-    while (s.length() > 2 && i < s.length())
-    {
-        if (s[i] == s[i + 1])   // ++ or --
-        {
-            s.erase(i, 2);  // delete
-            if (i != 0)
-                i--;    // take a index back
-        }
-        else
-            i++;
+    stack<int> st;
+    for(auto c : s) {
+        if(!st.empty() && c == st.top()) st.pop();
+        else st.push(c);
     }
 
-    if (s.length() == 1)
-    {
-        cout << "NO";
-        return;
-    }
-
-    if (s.length() == 2)
-    {
-        if (s[0] == s[1])   // ++ or --
-            cout << "YES";
-        else
-            cout << "NO";   // +- or -+
-        return;
-    }
-
-    cout << "NO";
+    if(st.empty()) cout << "Yes\n";
+    else cout << "No\n";
 }
 
 int main()
