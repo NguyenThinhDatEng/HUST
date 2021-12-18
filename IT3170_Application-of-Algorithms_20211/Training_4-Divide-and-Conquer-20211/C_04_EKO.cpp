@@ -9,35 +9,37 @@ using namespace std;
 int n;         //  1≤N≤1000000
 int M;         // 1≤M≤2 000 000 000
 vector<int> v; // 1 <= v[i] <= 1e9
-int firstIndex = 0;
+int top = 0;
+int ans;
 
 void input();
 
-auto sum(int H)
+auto check_H(int H)
 {
     long long woodAmount = 0;
-    for (int i = firstIndex; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        woodAmount += v[i] - H;
+        if (v[i] > H)
+            woodAmount += v[i] - H;
     }
-    return woodAmount;
+
+    return woodAmount >= M;
 }
 
-auto solve(int minH, int maxH)
+void solve(int minH, int maxH)
 {
-    int H = (minH + maxH) / 2;
-    while (v[firstIndex] <= H)
+    if (minH <= maxH)
     {
-        firstIndex++;
+        int H = (minH + maxH) / 2;
+        if (check_H(H))
+        {
+            ans = H;
+            solve(H + 1, maxH);
+        }
+        else
+            solve(minH, H - 1);
     }
-    auto woodAmount = sum(H);
-    if (woodAmount == M)
-        return H;
-    if (woodAmount > M)
-        return solve(H + 1, maxH);
-
-    firstIndex = 0;
-    return solve(minH, H);
+    return;
 }
 
 int main()
@@ -48,8 +50,8 @@ int main()
     // instance variable
 
     input();
-    sort(v.begin(), v.end());
-    cout << solve(0, v[n - 1]);
+    solve(0, top);
+    cout << ans;
     return 0;
 }
 
@@ -61,5 +63,6 @@ void input()
     {
         cin >> tmp;
         v.push_back(tmp);
+        top = max(top, tmp);
     }
 }
