@@ -11,11 +11,11 @@ void input(vector<int> &v, int &n);
 
 void merge(vector<int> &v, int l, int mid, int r)
 {
-    if (v[mid] <= v[mid + 1])   // 1 2 3 4 5 6
+    if (v[mid] <= v[mid + 1]) // 1 2 3 4 5 6
         return;
-    vector<int> tmp;    // get elements from smallest to largest
-    int i = l;          // the top of left array
-    int j = mid + 1;    // the top of right array
+    vector<int> tmp; // get elements from smallest to largest
+    int i = l;       // the top of left array
+    int j = mid + 1; // the top of right array
     while (i <= mid || j <= r)
     {
         if (i <= mid && j <= r)

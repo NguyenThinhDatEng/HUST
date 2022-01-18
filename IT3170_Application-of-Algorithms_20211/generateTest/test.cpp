@@ -1,56 +1,71 @@
-#include <bits/stdc++.h>
-
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <cstring>
+#include <math.h>
+#include <iomanip>
+#include <set>
 using namespace std;
-int n, tmp;
-vector <int> arr;
-vector <pair <int, int> > mark; // luu gia tri va index
-vector <int> ans;
+int n;         //  1≤N≤1000000
+int M;         // 1≤M≤2 000 000 000
+vector<int> v; // 1 <= v[i] <= 1e9
+int firstIndex = 0;
+int ans;
 
-int main(){
-    ios_base :: sync_with_stdio (0);
-    cin.tie (0); cout.tie (0);
-    // freopen("input.txt", "r", stdin);
-    cin >> n;
-    for (int i = 0; i < n; i++){
-        cin >> tmp;
-        arr.push_back(tmp);
+void input();
+
+auto sum(int H)
+{
+    long long woodAmount = 0;
+    for (int i = firstIndex; i < n; i++)
+    {
+        woodAmount += v[i] - H;
     }
-    /* 
-        voi nhung so nho hon tat ca cac so trong mark thi in ra -1 va them vao mark
-        nguoc lai thi khong can vi da co so nho hon so dang xet o phia sau, nen k can xet den so hien tai
-    */
-    mark.push_back({arr[n-1], n-1});
-    ans.push_back(-1);
-    int distance;
-    int len = 1; // do dai cua mark
-    int start, end, mid;
-    for (int i = n-2; i >= 0 ; i--){
-        distance = -1;
-        //binary search
-        start = 0, end = len;
-        while (start < end){
-            mid = (start + end) / 2;
-            if (arr[i] > mark[mid].first){
-                distance = mark[mid].second - i - 1;
-                end = mid;
-            } 
-            else {
-                start = mid + 1;
-            }
+    return woodAmount;
+}
+
+void solve(int minH, int maxH)
+{
+    if (minH <= maxH)
+    {
+        int H = (minH + maxH) / 2;
+        while (v[firstIndex] <= H)
+        {
+            firstIndex++;
         }
-
-        if (distance == -1){
-            mark.push_back({arr[i], i});
-            len++;
-        } 
-        ans.push_back(distance);
+        auto woodAmount = sum(H);
+        if (woodAmount >= M)
+        {
+            ans = H;
+            return solve(H + 1, maxH);
+        }
+        firstIndex = 0;
+        return solve(minH, H - 1);
     }
+    return;
+}
 
-    // in ket qua
-    for (int i = n -1; i >= 0; i--){
-        cout << ans[i] << " ";
-    }
-    
-    // fclose(stdin);
+int main()
+{
+    ios_base ::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    // instance variable
+
+    input();
+    sort(v.begin(), v.end());
+    solve(0, v[n - 1]);
+    cout << ans;
     return 0;
+}
+
+void input()
+{
+    cin >> n >> M;
+    int tmp;
+    for (int i = 0; i < n; i++)
+    {
+        cin >> tmp;
+        v.push_back(tmp);
+    }
 }
