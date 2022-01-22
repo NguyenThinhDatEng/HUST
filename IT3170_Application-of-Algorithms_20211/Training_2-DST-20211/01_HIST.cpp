@@ -1,21 +1,21 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-#include<string.h>
-#include<math.h>
-#include<stack>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <math.h>
+#include <stack>
 
 using namespace std;
 
-void input(int& n, vector<int>& v)
+void input(int &n, vector<int> &v)
 {
-    cin >> n;   // 1≤n≤1000000
+    cin >> n; // 1 ≤ n ≤ 10^6
     int tmp;
     // insert -1 to 2 local (front, back of v)
     v.push_back(-1);
     for (int i = 1; i <= n; i++)
     {
-        cin >> tmp; //   0≤tmp≤100000000
+        cin >> tmp; //   0 ≤ tmp ≤ 10^8
         v.push_back(tmp);
     }
     v.push_back(-1);
@@ -23,11 +23,12 @@ void input(int& n, vector<int>& v)
 
 int main()
 {
-    ios_base :: sync_with_stdio (0);
-    cin.tie (0);cout.tie (0);
-    int n = 1;  // No. of elements
-    vector<int> v;  // contains all of elements
-    vector<int> L, R;   // contain index nearest lower column
+    ios_base ::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    int n = 1;        // No. of elements
+    vector<int> v;    // contains all of elements
+    vector<int> L, R; // contain index nearest lower column
     long long maxS;
     while (n)
     {
@@ -36,7 +37,7 @@ int main()
             break;
         stack<int> left, right; // contain index temporary nearest lower column
         maxS = 0;
-        
+
         // algorithm
         int leftIndex, rightIndex;
         for (int i = 1; i <= n; i++)
@@ -50,7 +51,7 @@ int main()
             }
             L.push_back(leftIndex);
 
-            right.push(n + 2 - i);  // v has n + 2 elements (index of last element is n + 1)
+            right.push(n + 2 - i); // v has n + 2 elements (index of last element is n + 1)
             rightIndex = right.top();
             while (v[n + 1 - i] <= v[rightIndex])
             {
@@ -59,7 +60,7 @@ int main()
             }
             R.push_back(rightIndex);
         }
-        
+
         for (int i = 0; i < n; i++)
         {
             long long maxTmp = 1LL * (R[n - i - 1] - L[i] - 1) * v[i + 1];
