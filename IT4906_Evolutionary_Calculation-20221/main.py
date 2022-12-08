@@ -1,8 +1,10 @@
-# Thư viện
+# Libraries
 import random
 import numpy as np
 import math
-from file import readFile
+# Files
+import file
+from data import getData
 
 # Hằng số
 NUMBER_OF_TRUCKS = 2
@@ -10,12 +12,10 @@ NUMBER_OF_DRONES = 2
 TRUCK_SPEED = 30  # km/h
 DRONE_SPEED = TRUCK_SPEED * 2
 DRONE_LIMIT_TIME = 19  # phút
+N = 6  # dòng dữ liệu thứ n
 
 # Lấy mảng chứa các dòng dữ liệu trong file
-lines = readFile()
-# xóa 5 dòng đầu tiên
-for count in range(5):
-    lines.pop(0)
+lines = file.readFollowingLines(N)
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
