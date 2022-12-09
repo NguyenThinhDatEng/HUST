@@ -1,9 +1,4 @@
-const isAlphaNum = (c) => {
-  if ((c >= "a" && c <= "z") || (c >= "0" && c <= "9")) {
-    return true;
-  }
-  return false;
-};
+import { isAlphaNum } from "../../common/function.js";
 
 function palindrome(str) {
   // Viết thường các ký tự trong chuỗi
