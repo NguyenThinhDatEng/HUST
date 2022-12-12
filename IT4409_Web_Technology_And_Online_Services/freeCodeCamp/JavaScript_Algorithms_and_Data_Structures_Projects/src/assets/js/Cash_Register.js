@@ -14,41 +14,66 @@ const reversedObj = (obj) => {
   return newObj;
 };
 
+// cid: cash-in-drawer
 function checkCashRegister(price, cash, cid) {
-  // cash-in-drawer
   // Máy tính tiền có 2 thuộc tính: trạng thái + giá trị và mệnh giá tiền trả lại
-  let cashRegister = {
+  let output = {
     status: resource.Status.Open,
     change: [],
   };
   let change = cash - price; // Tiền thừa
   const money = reversedObj(_enum.CURRENCY_UNIT); // Đối tượng chứa mệnh giá ($) của từng đơn vị
-  cid = cid.reverse();
 
-  // Tính tiền
+  // Tỉnh tổng số tiền có ở hiện tại trong register
+  const register = cid.reduce(
+    function (acc, currentValue) {
+      acc.total += currentValue[1];
+      return acc;
+    },
+    { total: 0 }
+  );
+
+  // Tổng số tiền có trong máy không đủ để trả lại
+  if (register.total < change) {
+    output.status = resource.Status.InsufficientFunds;
+    return output;
+  }
+
+  // Tổng số tiền có trong máy bằng đúng số tiền trả lại
+  if (register.total === change) {
+    output.status = resource.Status.Close;
+    output.change = cid;
+    return output;
+  }
+
+  // Trường hợp còn lại
+  cid = cid.reverse(); // Xét mảng từ cuối lên đầu
   for (const arr of cid) {
     if (change >= money[arr[0]]) {
       if (change >= arr[1]) {
-        cashRegister.change.push([arr[0], arr[1]]);
+        output.change.push([arr[0], arr[1]]);
         change -= arr[1];
         change = Math.round(change * 1e10) / 1e10;
       } else if (change < arr[1]) {
         let divisionResult = Math.floor(change / money[arr[0]]);
         change -= divisionResult * money[arr[0]];
         change = Math.round(change * 1e10) / 1e10;
-        cashRegister.change.push([arr[0], divisionResult * money[arr[0]]]);
+        output.change.push([arr[0], divisionResult * money[arr[0]]]);
       }
     }
   }
-  // Cập nhật kết quả trả về
+
+  // Không có loại tiền phù hợp để trả lại
   if (change > 0) {
-    cashRegister.status = resource.Status.InsufficientFunds;
-    cashRegister.change = [];
+    output.status = resource.Status.InsufficientFunds;
+    output.change = [];
+    return output;
   }
-  return cashRegister;
+
+  return output;
 }
 
-const b = checkCashRegister(19.5, 20, [
+const res = checkCashRegister(19.5, 20, [
   ["PENNY", 0.5],
   ["NICKEL", 0],
   ["DIME", 0],
@@ -60,4 +85,4 @@ const b = checkCashRegister(19.5, 20, [
   ["ONE HUNDRED", 0],
 ]);
 
-console.log(b);
+console.log(res);
