@@ -13,13 +13,13 @@ def PMX_crossover(parent1, parent2):
     firstCrossPoint = random.randint(0, length - 2)
     secondCrossPoint = random.randint(firstCrossPoint + 1, length - 1)
 
-    print('crossPoint', firstCrossPoint, secondCrossPoint)
+    # print('crossPoint', firstCrossPoint, secondCrossPoint)
 
     # Lấy 2 đoạn của 2 gen
     parent1MiddleCross = parent1[firstCrossPoint:secondCrossPoint]
     parent2MiddleCross = parent2[firstCrossPoint:secondCrossPoint]
 
-    print('parents', parent1MiddleCross, parent2MiddleCross)
+    # print('parentMiddleCross', parent1MiddleCross, parent2MiddleCross)
 
     # Tạo 2 gen con tạm thời
     child1 = (parent1[:firstCrossPoint] +
@@ -27,7 +27,7 @@ def PMX_crossover(parent1, parent2):
     child2 = (parent2[:firstCrossPoint] +
               parent1MiddleCross + parent2[secondCrossPoint:])
 
-    print('children', child1, child2)
+    # print('children', child1, child2)
 
     # Gép các số của đoạn gen bị cắt ra theo các cặp tương ứng
     relationsWithDupes = []
@@ -35,7 +35,7 @@ def PMX_crossover(parent1, parent2):
         relationsWithDupes.append(
             [parent2MiddleCross[i], parent1MiddleCross[i]])
 
-    print('relationsWithDupes', relationsWithDupes)
+    # print('relationsWithDupes', relationsWithDupes)
 
     relations = []
     for pair in relationsWithDupes:
@@ -47,10 +47,10 @@ def PMX_crossover(parent1, parent2):
                     else:
                         pair[1] = relationsWithDupes[i][1]
         if pair not in relations and pair[::-1] not in relations:
-            if (pair[0] != pair[1]):
+            if (pair[0] != pair[1] and pair[0] not in parent1MiddleCross and pair[1] not in parent2MiddleCross):
                 relations.append(pair)
 
-    print('relations', relations)
+    # print('relations', relations)
 
     # Đối sánh
     # Đoạn gen phía trước
@@ -72,5 +72,15 @@ def PMX_crossover(parent1, parent2):
                 child1[i] = x[1]
             if val2 == x[1]:
                 child2[i] = x[0]
+
     # Trả về 2 cá thể
     return child1, child2
+
+
+def main():
+    print(PMX_crossover([6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1],
+                        [7, 6, 9, -1, 4, 8, 3, -1, 1, 5, 2, 10]))
+
+
+if __name__ == '__main__':
+    main()

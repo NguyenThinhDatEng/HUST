@@ -6,6 +6,7 @@ import math
 import file
 from data import getData
 from common import func as commonFunc
+from genetic_algorithm import partial_mapped_crossover as algorithm
 
 # Hằng số
 NUMBER_OF_TRUCKS = 3
@@ -170,6 +171,7 @@ for i in range(NUMBER_OF_TRUCKS):
     subGensTable.append(commonFunc.getAllPermutations(truckDestinations[i]))
 
 # Thiết lập mảng chứa các gen hoàn chỉnh
+print("=== Bảng gen ===")
 gensTable = []
 for i in range(LIMITED_GENS):
     # Khởi tạo từng gen
@@ -184,4 +186,19 @@ for i in range(LIMITED_GENS):
     # show từng dòng
     print(gensTable[-1])
 
-print(partial_mapped_crossover(gensTable[-1], gensTable[-2]))
+# Tạo bảng gen mới
+newGensTable = []
+for i in range(LIMITED_GENS):
+    # Lấy ngẫu nhiên 2 gen trong bảng gen
+    nextIndex = random.randint(0, LIMITED_GENS - 1)
+    while (nextIndex == i):
+        nextIndex = random.randint(0, LIMITED_GENS - 1)
+    # Lai ghép tạo gen mới
+    newGens = algorithm.PMX_crossover(
+        gensTable[i], gensTable[nextIndex])
+    newGensTable.append(newGens[0])
+    newGensTable.append(newGens[1])
+
+print("\n=== Bảng gen mới ===")
+for gen in newGensTable:
+    print(gen)
