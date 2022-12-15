@@ -5,14 +5,16 @@ import math
 # Files
 import file
 from data import getData
+from common import func as commonFunc
 
 # Hằng số
-NUMBER_OF_TRUCKS = 2
-NUMBER_OF_DRONES = 2
+NUMBER_OF_TRUCKS = 3
+NUMBER_OF_DRONES = 3
 TRUCK_SPEED = 30  # km/h
-DRONE_SPEED = TRUCK_SPEED * 2
-DRONE_LIMIT_TIME = 19  # phút
-N = 6  # dòng dữ liệu thứ n
+DRONE_SPEED = TRUCK_SPEED * 1.5
+DRONE_LIMIT_TIME = 15  # phút
+N = 6  # Lấy dữ liệu từ dòng số 6
+LIMITED_GENS = 50  # Số lượng gen giới hạn
 
 # Lấy mảng chứa các dòng dữ liệu trong file
 lines = file.readFollowingLines(N)
@@ -63,7 +65,6 @@ for arr in vector:
         timeDepotToCusByDrone.append(time)
     else:
         timeDepotToCusByDrone.append(-1)
-print(timeDepotToCusByDrone)
 
 # Khởi tạo mảng các góc giữa các vector
 
@@ -106,7 +107,7 @@ releaseDate = np.array(releaseDate)
 vector = np.array(vector)
 
 # Lấy 1 vị trí khách hàng ngẫu nhiên
-customerLocation = random.randint(1, numberOfCustomers)
+customerLocation = random.randint(1, numberOfCustomers - 1)
 
 # Lặp từ phần tử đầu đến kế cuối,
 # Vì khi đến phần tử cuối là đã sắp xếp thành công
@@ -132,17 +133,12 @@ def getCustomerList(arr):
     return location
 
 
-# Lấy thứ tự khách hàng sẽ đến thăm
-print("Customer Location Number", customerLocation)
-# Hiển thị góc của các khách hàng
+# Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
 locations = getCustomerList(angles[customerLocation])
-print(locations)
 
 # Cập nhật mảng đích đến
 count = NUMBER_OF_TRUCKS - 1
 lastIndex = 1
-for i in locations:
-    print(heuristicTime[i])
 for i in range(1, numberOfCustomers):
     if (count > 0):
         sum = 0
@@ -159,10 +155,33 @@ for k in range(lastIndex, numberOfCustomers):
     destination.append(locations[k])
 print(destination)
 
+# Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
 for location in destination:
     if (location != -1):
         truckDestinations[-1].append(location)
     else:
         truckDestinations.append([])
 
-print(truckDestinations)
+print(truckDestinations, '\n')
+
+# Thiết lập mảng chứa các đoạn gen chưa hoàn chỉnh
+subGensTable = []
+for i in range(NUMBER_OF_TRUCKS):
+    subGensTable.append(commonFunc.getAllPermutations(truckDestinations[i]))
+
+# Thiết lập mảng chứa các gen hoàn chỉnh
+gensTable = []
+for i in range(LIMITED_GENS):
+    # Khởi tạo từng gen
+    gensTable.append([])
+    for subgen in subGensTable:
+        # Lấy ngẫu nhiên 1 đoạn gen
+        randomIndex = random.randint(0, len(subgen) - 1)
+        # Đẩy vào đoạn gen chưa hoàn chỉnh
+        gensTable[-1] += subgen[randomIndex] + [-1]
+    # Loại bỏ -1 ở cuối mảng
+    gensTable[-1].pop()
+    # show từng dòng
+    print(gensTable[-1])
+
+print(partial_mapped_crossover(gensTable[-1], gensTable[-2]))
