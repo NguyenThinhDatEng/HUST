@@ -22,7 +22,7 @@ lines = file.readFollowingLines(N)
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
-numberOfCustomers = len(lines)  # số lượng khách hàng + 1
+numberOfCustomers = len(lines)    # số lượng khách hàng + 1
 numberOfDrones = NUMBER_OF_DRONES  # số lượng drone
 customerX = []  # Lưu trữ hoành độ của các khách hàng
 customerY = []  # Lưu trữ tung độ của các khách hàng
@@ -39,6 +39,10 @@ timeDepotToCusByDrone = []
 heuristicTime = [0]
 # Trung bình (Thời gian từ depot đến vị trí các khách hàng + release date)
 averageOfHeuristicTime = 0
+# Mảng chứa vị trí các khách hàng đến thăm của từng xe tải
+destination = []
+# Mảng chứa điểm đến của các xe tải
+truckDestinations = [[]]
 # Phương sai
 variance = 0
 
@@ -46,9 +50,10 @@ variance = 0
 # Khởi tạo các biến
 for line in lines:
     lineNum = line.split()
-    customerX.append(int(lineNum[0]))
+    customerX.append(int(lineNum[0]))  # customerX[0] : depot
     customerY.append(int(lineNum[1]))
     releaseDate.append(int(lineNum[-1]))
+    # khởi tạo vector tạo bởi all data point (include depot point) and depot
     vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])
 
 # khởi tạo mảng chứa thời gian bay của drone
@@ -75,14 +80,18 @@ def getAngle(v1, v2):
     return angle if angle >= 0 else angle + 360
 
 
+# vector[0] = 0 (vector by depot point & itself)
 for i in range(1, numberOfCustomers):
     for j in range(i, numberOfCustomers):
         angles[i][j] = getAngle(vector[i], vector[j])
+        # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
         angles[j][i] = angles[i][j]
+        #vector[0], vector[j] = 0
 
 # Khởi tạo mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng
 for i in range(1, numberOfCustomers):
     # tính khoảng cách theo Manhattan
+    # create distance/ time matrix btw Customer points to use later ???
     distance = abs(customerX[i] - customerX[0]) + \
         abs(customerY[i] - customerY[0])
     # append thời gian
@@ -102,6 +111,9 @@ customerX = np.array(customerX)
 customerY = np.array(customerY)
 releaseDate = np.array(releaseDate)
 vector = np.array(vector)
+
+# Lấy 1 vị trí khách hàng ngẫu nhiên
+customerLocation = random.randint(1, numberOfCustomers - 1)
 
 # Lặp từ phần tử đầu đến kế cuối,
 # Vì khi đến phần tử cuối là đã sắp xếp thành công
@@ -127,59 +139,47 @@ def getCustomerList(arr):
     return location
 
 
-def getTruckDestination(customerLocation):
-    # Mảng chứa vị trí các khách hàng đến thăm của từng xe tải
-    destination = []
-    # Mảng chứa điểm đến của các xe tải
-    truckDestinations = [[]]
-    # Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
-    locations = getCustomerList(angles[customerLocation])
-    # Cập nhật mảng đích đến
-    count = NUMBER_OF_TRUCKS - 1
-    lastIndex = 1
-    for i in range(1, numberOfCustomers):
-        if (count > 0):
-            sum = 0
-            for j in range(lastIndex, i + 1):
-                sum += heuristicTime[locations[j]]
-            if (abs(sum - averageOfHeuristicTime) <= variance):
-                for k in range(lastIndex, i + 1):
-                    destination.append(locations[k])
-                lastIndex = i + 1
-                destination.append(-1)
-                count -= 1
-
-    for k in range(lastIndex, numberOfCustomers):
-        destination.append(locations[k])
-
-    # Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
-    for location in destination:
-        if (location != -1):
-            truckDestinations[-1].append(location)
-        else:
-            truckDestinations.append([])
-    return truckDestinations
+# Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
+# angles[7]: list of angles is created by vector(depot, customer_7) and other vectors ???
+locations = getCustomerList(angles[customerLocation])
+# and then sort them ?
+# issue: trường hợp tốt nhất các điểm customer ở xung quanh depot, sắp xếp theo angles giữa 1 điểm và các điểm còn lại thì thứ tự các điểm vẫn bị lộn xộn theo 2 phía của điểm được chọn ban đầu
+# -> correct: xây dựng location: xuất phát từ 1 điểm bất kì, điểm tiếp theo  = góc nhỏ nhất giữa điểm đang xét và tất cả các góc còn lại
 
 
-print('get', getTruckDestination(3))
-
-
-print("===============================")
+# Cập nhật mảng đích đến
+count = NUMBER_OF_TRUCKS - 1
+lastIndex = 1
 for i in range(1, numberOfCustomers):
-    print(getTruckDestination(i))
+    if (count > 0):
+        sum = 0
+        for j in range(lastIndex, i + 1):
+            sum += heuristicTime[locations[j]]
+        if (abs(sum - averageOfHeuristicTime) <= variance):
+            for k in range(lastIndex, i + 1):
+                destination.append(locations[k])
+            lastIndex = i + 1
+            destination.append(-1)
+            count -= 1
 
+for k in range(lastIndex, numberOfCustomers):
+    destination.append(locations[k])
+print(destination)
+
+# Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
+for location in destination:
+    if (location != -1):
+        truckDestinations[-1].append(location)
+    else:
+        truckDestinations.append([])
+
+print(truckDestinations, '\n')
+
+# Algorithm
 # Thiết lập mảng chứa các đoạn gen chưa hoàn chỉnh
-allOfSubGensTable = []
 subGensTable = []
-for i in range(1, numberOfCustomers):
-    subGensTable = []
-    for j in range(NUMBER_OF_TRUCKS):
-        truckDestinations = getTruckDestination(i)
-        subGensTable.append(
-            commonFunc.getAllPermutations(truckDestinations[j]))
-    allOfSubGensTable.append(subGensTable)
-
-print("======================= SubGensTable ======================")
+for i in range(NUMBER_OF_TRUCKS):
+    subGensTable.append(commonFunc.getAllPermutations(truckDestinations[i]))
 
 # Thiết lập mảng chứa các gen hoàn chỉnh
 print("=== Bảng gen ===")
@@ -213,17 +213,3 @@ for i in range(LIMITED_GENS):
 print("\n=== Bảng gen mới ===")
 for gen in newGensTable:
     print(gen)
-
-
-def distances(X, Y):
-    '''
-    x, y are 1D arrays
-    '''
-    numberOfLocations = len(X)  # Lấy tổng số điểm đến
-    output = np.zeros((numberOfLocations, numberOfLocations))
-    for i in range(numberOfLocations):
-        for j in range(i + 1, numberOfLocations):
-            vector = [X[i] - X[j], Y[i] - Y[j]]
-            distance = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
-            output[i][j] = output[j][i] = distance
-    return output
