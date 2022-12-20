@@ -39,10 +39,6 @@ timeDepotToCusByDrone = []
 heuristicTime = [0]
 # Trung bình (Thời gian từ depot đến vị trí các khách hàng + release date)
 averageOfHeuristicTime = 0
-# Mảng chứa vị trí các khách hàng đến thăm của từng xe tải
-destination = []
-# Mảng chứa điểm đến của các xe tải
-truckDestinations = [[]]
 # Phương sai
 variance = 0
 
@@ -107,9 +103,6 @@ customerY = np.array(customerY)
 releaseDate = np.array(releaseDate)
 vector = np.array(vector)
 
-# Lấy 1 vị trí khách hàng ngẫu nhiên
-customerLocation = random.randint(1, numberOfCustomers - 1)
-
 # Lặp từ phần tử đầu đến kế cuối,
 # Vì khi đến phần tử cuối là đã sắp xếp thành công
 
@@ -134,41 +127,59 @@ def getCustomerList(arr):
     return location
 
 
-# Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
-locations = getCustomerList(angles[customerLocation])
+def getTruckDestination(customerLocation):
+    # Mảng chứa vị trí các khách hàng đến thăm của từng xe tải
+    destination = []
+    # Mảng chứa điểm đến của các xe tải
+    truckDestinations = [[]]
+    # Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
+    locations = getCustomerList(angles[customerLocation])
+    # Cập nhật mảng đích đến
+    count = NUMBER_OF_TRUCKS - 1
+    lastIndex = 1
+    for i in range(1, numberOfCustomers):
+        if (count > 0):
+            sum = 0
+            for j in range(lastIndex, i + 1):
+                sum += heuristicTime[locations[j]]
+            if (abs(sum - averageOfHeuristicTime) <= variance):
+                for k in range(lastIndex, i + 1):
+                    destination.append(locations[k])
+                lastIndex = i + 1
+                destination.append(-1)
+                count -= 1
 
-# Cập nhật mảng đích đến
-count = NUMBER_OF_TRUCKS - 1
-lastIndex = 1
+    for k in range(lastIndex, numberOfCustomers):
+        destination.append(locations[k])
+
+    # Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
+    for location in destination:
+        if (location != -1):
+            truckDestinations[-1].append(location)
+        else:
+            truckDestinations.append([])
+    return truckDestinations
+
+
+print('get', getTruckDestination(3))
+
+
+print("===============================")
 for i in range(1, numberOfCustomers):
-    if (count > 0):
-        sum = 0
-        for j in range(lastIndex, i + 1):
-            sum += heuristicTime[locations[j]]
-        if (abs(sum - averageOfHeuristicTime) <= variance):
-            for k in range(lastIndex, i + 1):
-                destination.append(locations[k])
-            lastIndex = i + 1
-            destination.append(-1)
-            count -= 1
-
-for k in range(lastIndex, numberOfCustomers):
-    destination.append(locations[k])
-print(destination)
-
-# Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
-for location in destination:
-    if (location != -1):
-        truckDestinations[-1].append(location)
-    else:
-        truckDestinations.append([])
-
-print(truckDestinations, '\n')
+    print(getTruckDestination(i))
 
 # Thiết lập mảng chứa các đoạn gen chưa hoàn chỉnh
+allOfSubGensTable = []
 subGensTable = []
-for i in range(NUMBER_OF_TRUCKS):
-    subGensTable.append(commonFunc.getAllPermutations(truckDestinations[i]))
+for i in range(1, numberOfCustomers):
+    subGensTable = []
+    for j in range(NUMBER_OF_TRUCKS):
+        truckDestinations = getTruckDestination(i)
+        subGensTable.append(
+            commonFunc.getAllPermutations(truckDestinations[j]))
+    allOfSubGensTable.append(subGensTable)
+
+print("======================= SubGensTable ======================")
 
 # Thiết lập mảng chứa các gen hoàn chỉnh
 print("=== Bảng gen ===")
@@ -202,3 +213,17 @@ for i in range(LIMITED_GENS):
 print("\n=== Bảng gen mới ===")
 for gen in newGensTable:
     print(gen)
+
+
+def distances(X, Y):
+    '''
+    x, y are 1D arrays
+    '''
+    numberOfLocations = len(X)  # Lấy tổng số điểm đến
+    output = np.zeros((numberOfLocations, numberOfLocations))
+    for i in range(numberOfLocations):
+        for j in range(i + 1, numberOfLocations):
+            vector = [X[i] - X[j], Y[i] - Y[j]]
+            distance = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
+            output[i][j] = output[j][i] = distance
+    return output
