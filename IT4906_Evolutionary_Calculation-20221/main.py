@@ -22,13 +22,13 @@ lines = file.readFollowingLines(N)
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
-numberOfCustomers = len(lines)  # số lượng khách hàng + 1
+numberOfCustomers = len(lines)    # số lượng khách hàng + 1
 numberOfDrones = NUMBER_OF_DRONES  # số lượng drone
 customerX = []  # Lưu trữ hoành độ của các khách hàng
 customerY = []  # Lưu trữ tung độ của các khách hàng
 releaseDate = []  # Lưu thời gian sản phẩm sẵn sàng của các khách hàng
 vector = []  # vector nối các depot với các vị trí khách hàng
-angles = np.zeros((numberOfCustomers, numberOfCustomers)
+angles = np.zeros((numberOfCustomers , numberOfCustomers )
                   )  # chứa góc các vector với nhau
 # mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng (phút)
 timeOfDepotToCustomer = []
@@ -50,10 +50,10 @@ variance = 0
 # Khởi tạo các biến
 for line in lines:
     lineNum = line.split()
-    customerX.append(int(lineNum[0]))
+    customerX.append(int(lineNum[0]))                                           #customerX[0] : depot
     customerY.append(int(lineNum[1]))
     releaseDate.append(int(lineNum[-1]))
-    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])
+    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])         #khởi tạo vector tạo bởi all data point (include depot point) and depot
 
 # khởi tạo mảng chứa thời gian bay của drone
 for arr in vector:
@@ -79,15 +79,16 @@ def getAngle(v1, v2):
     return angle if angle >= 0 else angle + 360
 
 
-for i in range(1, numberOfCustomers):
+for i in range(1, numberOfCustomers):                              #vector[0] = 0 (vector by depot point & itself)
     for j in range(i, numberOfCustomers):
-        angles[i][j] = getAngle(vector[i], vector[j])
-        angles[j][i] = angles[i][j]
+        angles[i][j] = getAngle(vector[i], vector[j])                    
+        angles[j][i] = angles[i][j]                               # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
+                                                                  #vector[0], vector[j] = 0
 
 # Khởi tạo mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng
 for i in range(1, numberOfCustomers):
     # tính khoảng cách theo Manhattan
-    distance = abs(customerX[i] - customerX[0]) + \
+    distance = abs(customerX[i] - customerX[0]) + \                       #create distance/ time matrix btw Customer points to use later ???
         abs(customerY[i] - customerY[0])
     # append thời gian
     timeOfDepotToCustomer.append(
@@ -135,7 +136,11 @@ def getCustomerList(arr):
 
 
 # Sắp xếp vị trí các khách hàng theo góc quay từ bé đến lớn
-locations = getCustomerList(angles[customerLocation])
+locations = getCustomerList(angles[customerLocation])                     #angles[7]: list of angles is created by vector(depot, customer_7) and other vectors ???
+                                                                         #and then sort them ?
+    #issue: trường hợp tốt nhất các điểm customer ở xung quanh depot, sắp xếp theo angles giữa 1 điểm và các điểm còn lại thì thứ tự các điểm vẫn bị lộn xộn theo 2 phía của điểm được chọn ban đầu
+    # -> correct: xây dựng location: xuất phát từ 1 điểm bất kì, điểm tiếp theo  = góc nhỏ nhất giữa điểm đang xét và tất cả các góc còn lại
+  
 
 # Cập nhật mảng đích đến
 count = NUMBER_OF_TRUCKS - 1
@@ -165,6 +170,7 @@ for location in destination:
 
 print(truckDestinations, '\n')
 
+##########Algorithm
 # Thiết lập mảng chứa các đoạn gen chưa hoàn chỉnh
 subGensTable = []
 for i in range(NUMBER_OF_TRUCKS):
