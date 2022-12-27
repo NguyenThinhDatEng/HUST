@@ -30,8 +30,6 @@ releaseDate = []  # Lưu thời gian sản phẩm sẵn sàng của các khách 
 vector = []  # vector nối các depot với các vị trí khách hàng
 angles = np.zeros((numberOfCustomers, numberOfCustomers)
                   )  # chứa góc các vector với nhau
-# mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng (phút)
-timeOfDepotToCustomer = []
 # Mảng chứa thời gian bay của drone đến các vị trí khách hàng
 # Nếu vị trí khách hàng nằm ngoài khoảng bay được của drone -> gán -1
 timeDepotToCusByDrone = []
@@ -45,7 +43,8 @@ destination = []
 truckDestinations = [[]]
 # Phương sai
 variance = 0
-
+# Mảng chứa các thời gian di chuyển của truck giữa các điểm
+timeOfDesToDes = np.zeros((numberOfCustomers, numberOfCustomers))
 
 # Khởi tạo các biến
 for line in lines:
@@ -55,6 +54,16 @@ for line in lines:
     releaseDate.append(int(lineNum[-1]))
     # khởi tạo vector tạo bởi all data point (include depot point) and depot
     vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])
+
+# Khởi tạo mảng chứa các thời gian di chuyển của truck giữa các điểm
+for i in range(0, numberOfCustomers):
+    for j in range(i + 1, numberOfCustomers):
+        # Tinh khoang cach theo mahattan
+        distance = abs(customerX[i] - customerY[i]) + \
+            abs(customerX[j] - customerY[j])
+        # t = s / v
+        time = distance / TRUCK_SPEED
+        timeOfDesToDes[i][j] = timeOfDesToDes[j][i] = time * 60
 
 # khởi tạo mảng chứa thời gian bay của drone
 for arr in vector:
@@ -90,14 +99,8 @@ for i in range(1, numberOfCustomers):
 
 # Khởi tạo mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng
 for i in range(1, numberOfCustomers):
-    # tính khoảng cách theo Manhattan
-    # create distance/ time matrix btw Customer points to use later ???
-    distance = abs(customerX[i] - customerX[0]) + \
-        abs(customerY[i] - customerY[0])
     # append thời gian
-    timeOfDepotToCustomer.append(
-        distance/TRUCK_SPEED * 60)  # đổi ra đơn vị phút
-    heuristicTime.append(timeOfDepotToCustomer[-1] + releaseDate[i])
+    heuristicTime.append(timeOfDesToDes[0][i] + releaseDate[i])
     # tính tổng
     averageOfHeuristicTime += heuristicTime[-1]
 
