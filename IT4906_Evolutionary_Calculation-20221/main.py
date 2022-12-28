@@ -22,7 +22,7 @@ lines = file.readFollowingLines(N)
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
-numberOfCustomers = len(lines)    # số lượng khách hàng + 1
+numberOfCustomers = len(lines)                                                                          # số lượng khách hàng + 1
 numberOfDrones = NUMBER_OF_DRONES  # số lượng drone
 customerX = []  # Lưu trữ hoành độ của các khách hàng
 customerY = []  # Lưu trữ tung độ của các khách hàng
@@ -53,7 +53,7 @@ for line in lines:
     customerY.append(int(lineNum[1]))
     releaseDate.append(int(lineNum[-1]))
     # khởi tạo vector tạo bởi all data point (include depot point) and depot
-    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])
+    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])                       #vector by depot point and all data point (include depot)
 
 # Khởi tạo mảng chứa các thời gian di chuyển của truck giữa các điểm
 for i in range(0, numberOfCustomers):
@@ -63,7 +63,7 @@ for i in range(0, numberOfCustomers):
             abs(customerX[j] - customerY[j])
         # t = s / v
         time = distance / TRUCK_SPEED
-        timeOfDesToDes[i][j] = timeOfDesToDes[j][i] = time * 60
+        timeOfDesToDes[i][j] = timeOfDesToDes[j][i] = time * 60                                     #Truck_time all data point
 
 # khởi tạo mảng chứa thời gian bay của drone
 for arr in vector:
@@ -75,7 +75,7 @@ for arr in vector:
     if (time <= DRONE_LIMIT_TIME):
         timeDepotToCusByDrone.append(time)
     else:
-        timeDepotToCusByDrone.append(-1)
+        timeDepotToCusByDrone.append(-1)                                                          #flying time: include depot to depot
 
 # Khởi tạo mảng các góc giữa các vector
 
@@ -86,16 +86,16 @@ def getAngle(v1, v2):
         math.sqrt(v2[0] * v2[0] + v2[1] * v2[1])
     cos = round(numerator/denominator, 10)
     angle = math.degrees(math.acos(cos))
-    return angle if angle >= 0 else angle + 360
+    return angle if angle >= 0 else angle + 360                                         #?tinh cos nay khong the hien duoc goc tu`
 
 
-# vector[0] = 0 (vector by depot point & itself)
+                                                         # vector[0] = 0 (vector by depot point & itself)
 for i in range(1, numberOfCustomers):
     for j in range(i, numberOfCustomers):
         angles[i][j] = getAngle(vector[i], vector[j])
-        # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
+                                                         # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
         angles[j][i] = angles[i][j]
-        #vector[0], vector[j] = 0
+                                                                   #vector[0], vector[j] = 0
 
 # Khởi tạo mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng
 for i in range(1, numberOfCustomers):
