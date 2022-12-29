@@ -1,13 +1,3 @@
-# Libraries
-import random
-import numpy as np
-import math
-# Files
-import file
-from data import getData
-from common import func as commonFunc
-from genetic_algorithm import partial_mapped_crossover as algorithm
-
 # Hằng số
 NUMBER_OF_TRUCKS = 3
 NUMBER_OF_DRONES = 3
@@ -18,7 +8,8 @@ N = 6  # Lấy dữ liệu từ dòng số 6
 LIMITED_GENS = 50  # Số lượng gen giới hạn
 
 # Lấy mảng chứa các dòng dữ liệu trong file
-lines = file.readFollowingLines(N)
+#lines = file.readFollowingLines(N)
+lines = file1[5:]
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
@@ -86,7 +77,11 @@ def getAngle(v1, v2):
         math.sqrt(v2[0] * v2[0] + v2[1] * v2[1])
     cos = round(numerator/denominator, 10)
     angle = math.degrees(math.acos(cos))
-    return angle if angle >= 0 else angle + 360                                         #?tinh cos nay khong the hien duoc goc tu`
+    return angle                                                                  #?tinh cos nay khong the hien duoc goc tu` -> tinh
+
+#0 <=  max_angle <= 180 
+# truong hop: max_angle < 180, max_angle = 180 ( 360, < 360)
+#objective: tu 1 diem -> xac dinh thu tu cac diem theo 1 vong tron
 
 
                                                          # vector[0] = 0 (vector by depot point & itself)
@@ -147,7 +142,7 @@ def getCustomerList(arr):
 locations = getCustomerList(angles[customerLocation])
 # and then sort them ?
 # issue: trường hợp tốt nhất các điểm customer ở xung quanh depot, sắp xếp theo angles giữa 1 điểm và các điểm còn lại thì thứ tự các điểm vẫn bị lộn xộn theo 2 phía của điểm được chọn ban đầu
-# -> correct: xây dựng location: xuất phát từ 1 điểm bất kì, điểm tiếp theo  = góc nhỏ nhất giữa điểm đang xét và tất cả các góc còn lại
+# -> correct: xây dựng location: xuất phát từ 1 điểm bất kì, điểm tiếp theo  = góc nhỏ nhất giữa điểm đang xét và tất cả các điểm còn lại
 
 
 # Cập nhật mảng đích đến
