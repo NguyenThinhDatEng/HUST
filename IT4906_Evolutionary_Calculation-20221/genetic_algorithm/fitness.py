@@ -28,7 +28,7 @@ def fitness(timeDepotToCusByDrone, timeOfDesToDesByTruck, destination):  #versio
         Ti[truck_i].append(np.max(releaseDate[index_Ehi0[truck_i][:i]]) + Tij[0][index_Ehi0[truck_i][0]] )
       else:
         Ti[truck_i].append(Tij[0][index_Ehi0[truck_i][0]])       #khoi tao T0
-      del i
+     
 
       for i in range(len(index_Ehi0[truck_i]) - 1):               
         if Dj[index_Ehi0[truck_i][i]] == -1:                              #có đường đi của drone: check vị trí đó trên mảng drone
