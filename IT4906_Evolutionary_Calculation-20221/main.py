@@ -1,3 +1,12 @@
+# import libraries
+import random
+import numpy as np
+import math
+# files
+import file
+from common import func as commonFunc
+from genetic_algorithm import partial_mapped_crossover as algorithm
+
 # Hằng số
 NUMBER_OF_TRUCKS = 3
 NUMBER_OF_DRONES = 3
@@ -8,12 +17,12 @@ N = 6  # Lấy dữ liệu từ dòng số 6
 LIMITED_GENS = 50  # Số lượng gen giới hạn
 
 # Lấy mảng chứa các dòng dữ liệu trong file
-#lines = file.readFollowingLines(N)
-lines = file1[5:]
+lines = file.readFollowingLines(N)
 
 # Khởi báo các biến
 numberOfTrucks = NUMBER_OF_TRUCKS  # số lượng xe tải
-numberOfCustomers = len(lines)                                                                          # số lượng khách hàng + 1
+# số lượng khách hàng + 1
+numberOfCustomers = len(lines)
 numberOfDrones = NUMBER_OF_DRONES  # số lượng drone
 customerX = []  # Lưu trữ hoành độ của các khách hàng
 customerY = []  # Lưu trữ tung độ của các khách hàng
@@ -44,7 +53,8 @@ for line in lines:
     customerY.append(int(lineNum[1]))
     releaseDate.append(int(lineNum[-1]))
     # khởi tạo vector tạo bởi all data point (include depot point) and depot
-    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])                       #vector by depot point and all data point (include depot)
+    # vector by depot point and all data point (include depot)
+    vector.append([customerX[-1] - customerX[0], customerY[-1] - customerY[0]])
 
 # Khởi tạo mảng chứa các thời gian di chuyển của truck giữa các điểm
 for i in range(0, numberOfCustomers):
@@ -54,7 +64,8 @@ for i in range(0, numberOfCustomers):
             abs(customerX[j] - customerY[j])
         # t = s / v
         time = distance / TRUCK_SPEED
-        timeOfDesToDes[i][j] = timeOfDesToDes[j][i] = time * 60                                     #Truck_time all data point
+        timeOfDesToDes[i][j] = timeOfDesToDes[j][i] = time * \
+            60  # Truck_time all data point
 
 # khởi tạo mảng chứa thời gian bay của drone
 for arr in vector:
@@ -66,7 +77,7 @@ for arr in vector:
     if (time <= DRONE_LIMIT_TIME):
         timeDepotToCusByDrone.append(time)
     else:
-        timeDepotToCusByDrone.append(-1)                                                          #flying time: include depot to depot
+        timeDepotToCusByDrone.append(-1)  # flying time: include depot to depot
 
 # Khởi tạo mảng các góc giữa các vector
 
@@ -77,20 +88,19 @@ def getAngle(v1, v2):
         math.sqrt(v2[0] * v2[0] + v2[1] * v2[1])
     cos = round(numerator/denominator, 10)
     angle = math.degrees(math.acos(cos))
-    return angle                                                                  #?tinh cos nay khong the hien duoc goc tu` -> tinh
+    return angle  # ?tinh cos nay khong the hien duoc goc tu` -> tinh
 
-#0 <=  max_angle <= 180 
+#0 <=  max_angle <= 180
 # truong hop: max_angle < 180, max_angle = 180 ( 360, < 360)
-#objective: tu 1 diem -> xac dinh thu tu cac diem theo 1 vong tron
+# objective: tu 1 diem -> xac dinh thu tu cac diem theo 1 vong tron
 
-
-                                                         # vector[0] = 0 (vector by depot point & itself)
+    # vector[0] = 0 (vector by depot point & itself)
 for i in range(1, numberOfCustomers):
     for j in range(i, numberOfCustomers):
         angles[i][j] = getAngle(vector[i], vector[j])
-                                                         # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
+        # matrix angles: angle by customer i and customer j (numberOfCustomer x numberOfCustomer)
         angles[j][i] = angles[i][j]
-                                                                   #vector[0], vector[j] = 0
+        #vector[0], vector[j] = 0
 
 # Khởi tạo mảng chứa thời gian ước lượng từ gốc depot đến vị trí các khách hàng
 for i in range(1, numberOfCustomers):
