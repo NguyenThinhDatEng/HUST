@@ -211,6 +211,7 @@ for i in range(LIMITED_GENS):
     gensTable[-1].pop()
 
 # Tạo bảng gen mới
+newGensDroneTable = []
 newGensTable = []
 for i in range(LIMITED_GENS):
     # Lấy ngẫu nhiên 2 gen trong bảng gen
@@ -219,7 +220,7 @@ for i in range(LIMITED_GENS):
         nextIndex = random.randint(0, LIMITED_GENS - 1)
     # Lai ghép tạo gen mới
     newGens = algorithm.PMX_crossover(
-        gensTable[i], gensTable[nextIndex])
+        gensTable[i], gensTable[nextIndex], gensDroneTable[i], gensDroneTable[nextIndex])
     count = 0
     for i in newGens[0]:
         if (i == -1):
@@ -235,3 +236,6 @@ for i in range(LIMITED_GENS):
 
     newGensTable.append(newGens[0])
     newGensTable.append(newGens[1])
+    newGensDroneTable.append(newGens[2])
+    newGensDroneTable.append(newGens[3])
+    print(newGens)

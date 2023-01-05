@@ -3,7 +3,7 @@ import random
 # Phép lai ánh xạ từng phần (PMX - Partial Mappel Crossover)
 
 
-def PMX_crossover(parent1, parent2):
+def PMX_crossover(parent1, parent2, drone1, drone2):
     '''
     parent1 and parent2 are lists
     '''
@@ -27,6 +27,9 @@ def PMX_crossover(parent1, parent2):
     parent1MiddleCross = parent1[firstCrossPoint:secondCrossPoint]
     parent2MiddleCross = parent2[firstCrossPoint:secondCrossPoint]
 
+    drone1MiddleCross = drone1[firstCrossPoint:secondCrossPoint]
+    drone2MiddleCross = drone2[firstCrossPoint:secondCrossPoint]
+
     # print('Middle gene 1: ', parent1MiddleCross)
     # print('Middle gene 2: ', parent2MiddleCross)
     # print()
@@ -38,6 +41,11 @@ def PMX_crossover(parent1, parent2):
               parent2MiddleCross + parent1[secondCrossPoint:])
     child2 = (parent2[:firstCrossPoint] +
               parent1MiddleCross + parent2[secondCrossPoint:])
+
+    childDrone1 = (drone1[:firstCrossPoint] +
+                   drone2MiddleCross + drone1[secondCrossPoint:])
+    childDrone2 = (drone2[:firstCrossPoint] +
+                   drone1MiddleCross + drone2[secondCrossPoint:])
     # print()
     # print('Temporary child 1: ', child1, '\nTemporary child 2: ', child2)
     # print()
@@ -76,8 +84,16 @@ def PMX_crossover(parent1, parent2):
         for x in relations:
             if val1 == x[0]:
                 child1[i] = x[1]
+                for j in range(firstCrossPoint):
+                    if (child2[j] == x[1]):
+                        childDrone1[i] = childDrone2[j]
+                        break
             if val2 == x[1]:
                 child2[i] = x[0]
+                for j in range(firstCrossPoint):
+                    if (child1[j] == x[0]):
+                        childDrone2[i] = childDrone2[j]
+                        break
 
     # Đoạn gen phía sau
     for i in range(secondCrossPoint, length):
@@ -86,14 +102,22 @@ def PMX_crossover(parent1, parent2):
         for x in relations:
             if val1 == x[0]:
                 child1[i] = x[1]
+                for j in range(secondCrossPoint, length):
+                    if (child2[j] == x[1]):
+                        childDrone1[i] = childDrone2[j]
+                        break
             if val2 == x[1]:
                 child2[i] = x[0]
+                for j in range(secondCrossPoint, length):
+                    if (child1[j] == x[0]):
+                        childDrone2[i] = childDrone2[j]
+                        break
     # print()
     # print('Child 1: ', child1, '\nChild 2: ', child2)
     # print()
 
     # Trả về 2 cá thể
-    return child1, child2
+    return child1, child2, childDrone1, childDrone2
 
 
 def main():
