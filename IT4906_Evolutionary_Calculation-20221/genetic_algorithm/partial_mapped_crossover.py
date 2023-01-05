@@ -7,27 +7,40 @@ def PMX_crossover(parent1, parent2):
     '''
     parent1 and parent2 are lists
     '''
+
+    # print()
+    # print("Parent 1: ", parent1)
+    # print("Parent 2: ", parent2)
+
     length = len(parent1)  # Lấy chiều dài gen
 
     # Creating parameters for random sublist
-    firstCrossPoint = random.randint(0, length - 2)
-    secondCrossPoint = random.randint(firstCrossPoint + 1, length - 1)
+    firstCrossPoint = 4  # random.randint(0, length - 2)
+    secondCrossPoint = 9  # random.randint(firstCrossPoint + 1, length - 1)
 
-    # print('crossPoint', firstCrossPoint, secondCrossPoint)
+    # print()
+    # print('First cross point: ', firstCrossPoint,
+    #       '\nSecond cross point: ', secondCrossPoint)
+    # print()
 
     # Lấy 2 đoạn của 2 gen
     parent1MiddleCross = parent1[firstCrossPoint:secondCrossPoint]
     parent2MiddleCross = parent2[firstCrossPoint:secondCrossPoint]
 
+    # print('Middle gene 1: ', parent1MiddleCross)
+    # print('Middle gene 2: ', parent2MiddleCross)
+    # print()
+
     # print('parentMiddleCross', parent1MiddleCross, parent2MiddleCross)
 
-    # Tạo 2 gen con tạm thời
+    # Create 2 temporary sub genes
     child1 = (parent1[:firstCrossPoint] +
               parent2MiddleCross + parent1[secondCrossPoint:])
     child2 = (parent2[:firstCrossPoint] +
               parent1MiddleCross + parent2[secondCrossPoint:])
-
-    # print('children', child1, child2)
+    # print()
+    # print('Temporary child 1: ', child1, '\nTemporary child 2: ', child2)
+    # print()
 
     # Gép các số của đoạn gen bị cắt ra theo các cặp tương ứng
     relationsWithDupes = []
@@ -35,8 +48,10 @@ def PMX_crossover(parent1, parent2):
         relationsWithDupes.append(
             [parent2MiddleCross[i], parent1MiddleCross[i]])
 
-    # print('relationsWithDupes', relationsWithDupes)
+    # print()
+    # print('Pairs: ', relationsWithDupes)
 
+    # Chọn lọc ra các cặp phục vụ cho việc hoán đổi
     relations = []
     for pair in relationsWithDupes:
         for i in range(len(relationsWithDupes)):
@@ -50,7 +65,8 @@ def PMX_crossover(parent1, parent2):
             if (pair[0] != pair[1] and pair[0] not in parent1MiddleCross and pair[1] not in parent2MiddleCross):
                 relations.append(pair)
 
-    # print('relations', relations)
+    # print('Good pairs: ', relations)
+    # print()
 
     # Đối sánh
     # Đoạn gen phía trước
@@ -72,6 +88,9 @@ def PMX_crossover(parent1, parent2):
                 child1[i] = x[1]
             if val2 == x[1]:
                 child2[i] = x[0]
+    # print()
+    # print('Child 1: ', child1, '\nChild 2: ', child2)
+    # print()
 
     # Trả về 2 cá thể
     return child1, child2

@@ -167,7 +167,6 @@ for i in range(1, numberOfCustomers):
 
 for k in range(lastIndex, numberOfCustomers):
     destination.append(locations[k])
-print(destination)
 
 # Cập nhật mảng 2 chiều chứa các điểm đến của từng xe
 for location in destination:
@@ -176,8 +175,6 @@ for location in destination:
     else:
         truckDestinations.append([])
 
-print(truckDestinations, '\n')
-
 # Algorithm
 # Thiết lập mảng chứa các đoạn gen chưa hoàn chỉnh
 subGensTable = []
@@ -185,7 +182,17 @@ for i in range(NUMBER_OF_TRUCKS):
     subGensTable.append(commonFunc.getAllPermutations(truckDestinations[i]))
 
 # Thiết lập mảng chứa các gen hoàn chỉnh
-print("=== Bảng gen ===")
+# Bảng gen drone
+gensDroneTable = []
+for i in range(LIMITED_GENS):
+    # Khởi tạo từng gen
+    gensDroneTable.append([])
+    for j in range(numberOfCustomers + NUMBER_OF_TRUCKS - 2):
+        # Lấy ngẫu nhiên 1 số từ 0 đến 1
+        randomNum = random.random()
+        # Đẩy vào mảng cuối cùng của bảng genes
+        gensDroneTable[-1].append(randomNum)
+# Bảng gen Trucks
 gensTable = []
 for i in range(LIMITED_GENS):
     # Khởi tạo từng gen
@@ -197,8 +204,6 @@ for i in range(LIMITED_GENS):
         gensTable[-1] += subgen[randomIndex] + [-1]
     # Loại bỏ -1 ở cuối mảng
     gensTable[-1].pop()
-    # show từng dòng
-    print(gensTable[-1])
 
 # Tạo bảng gen mới
 newGensTable = []
@@ -210,9 +215,18 @@ for i in range(LIMITED_GENS):
     # Lai ghép tạo gen mới
     newGens = algorithm.PMX_crossover(
         gensTable[i], gensTable[nextIndex])
+    count = 0
+    for i in newGens[0]:
+        if (i == -1):
+            count += 1
+    if (count > 2):
+        print(newGens[0])
+    count = 0
+    for i in newGens[1]:
+        if (i == -1):
+            count += 1
+    if (count > 2):
+        print(newGens[1])
+
     newGensTable.append(newGens[0])
     newGensTable.append(newGens[1])
-
-print("\n=== Bảng gen mới ===")
-for gen in newGensTable:
-    print(gen)
