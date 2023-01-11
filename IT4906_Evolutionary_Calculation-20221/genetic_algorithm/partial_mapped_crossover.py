@@ -1,5 +1,7 @@
 import random
 
+negativeCount = 0
+
 # Phép lai ánh xạ từng phần (PMX - Partial Mappel Crossover)
 
 
@@ -7,7 +9,8 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
     '''
     parent1 and parent2 are lists
     '''
-
+    parent1 = standardized_gene(parent1)
+    parent2 = standardized_gene(parent2)
     # print()
     # print("Parent 1: ", parent1)
     # print("Parent 2: ", parent2)
@@ -116,14 +119,35 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
     # print('Child 1: ', child1, '\nChild 2: ', child2)
     # print()
 
+    child1 = format_gene(child1)
+    child2 = format_gene(child2)
+
     # Trả về 2 cá thể
     return child1, child2, childDrone1, childDrone2
 
 
-def main():
-    print(PMX_crossover([6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1],
-                        [7, 6, 9, -1, 4, 8, 3, -1, 1, 5, 2, 10]))
+def standardized_gene(parent):
+    global negativeCount
+    for i in range(len(parent)):
+        if (parent[i] == -1):
+            parent[i] += negativeCount
+            negativeCount -= 1
+    return parent
 
 
-if __name__ == '__main__':
-    main()
+def format_gene(child):
+    for i in range(len(child)):
+        if (child[i] < 0):
+            child[i] = -1
+    return child
+
+
+# def main():
+print(PMX_crossover([6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1],
+                    [7, 6, 9, -1, 4, 8, 3, -1, 1, 5, 2, 10],
+                    [6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1],
+                    [6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1]))
+
+
+# if __name__ == '__main__':
+# main()
