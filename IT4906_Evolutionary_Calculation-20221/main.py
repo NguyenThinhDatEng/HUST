@@ -94,6 +94,7 @@ def getAngle(v1, v2):
 # truong hop: max_angle < 180, max_angle = 180 ( 360, < 360)
 # objective: tu 1 diem -> xac dinh thu tu cac diem theo 1 vong tron
 
+
     # vector[0] = 0 (vector by depot point & itself)
 for i in range(1, numberOfCustomers):
     for j in range(i, numberOfCustomers):
@@ -238,4 +239,5 @@ for i in range(LIMITED_GENS):
     newGensTable.append(newGens[1])
     newGensDroneTable.append(newGens[2])
     newGensDroneTable.append(newGens[3])
-    print(newGens)
+
+print(newGens)

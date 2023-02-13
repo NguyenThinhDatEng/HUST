@@ -1,5 +1,25 @@
 import random
 
+
+def standardized_gene(parent, indexOfNegativeNum):
+    parentTemp = []
+    count = 0
+    for i in parent:
+        if i < 0:
+            # Lưu lại vị trí các vách ngăn
+            indexOfNegativeNum.append(count)
+        else:
+            # Tạo mảng mới toàn số dương
+            parentTemp.append(i)
+        count += 1
+    return parentTemp
+
+
+def format_gene(child, indexOfNegativeNum):
+    for i in indexOfNegativeNum:
+        child.insert(i, -1)
+    return child
+
 # Phép lai ánh xạ từng phần (PMX - Partial Mappel Crossover)
 
 
@@ -7,22 +27,24 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
     '''
     parent1 and parent2 are lists
     '''
-    parent1 = standardized_gene(parent1, 0)
-    parent2 = standardized_gene(parent2, 0)
+    indexOfNegativeNum1 = []
+    indexOfNegativeNum2 = []
+    parent1 = standardized_gene(parent1, indexOfNegativeNum1)
+    parent2 = standardized_gene(parent2, indexOfNegativeNum2)
     # print()
-    print("Parent 1: ", parent1)
-    print("Parent 2: ", parent2)
+    # print("Parent 1: ", parent1)
+    # print("Parent 2: ", parent2)
 
     length = len(parent1)  # Lấy chiều dài gen
 
     # Creating parameters for random sublist
-    firstCrossPoint = 4  # random.randint(0, length - 2)
-    secondCrossPoint = 9  # random.randint(firstCrossPoint + 1, length - 1)
+    firstCrossPoint = random.randint(0, length - 2)
+    secondCrossPoint = random.randint(firstCrossPoint + 1, length - 1)
 
-    print()
-    print('First cross point: ', firstCrossPoint,
-          '\nSecond cross point: ', secondCrossPoint)
-    print()
+    # print()
+    # print('First cross point: ', firstCrossPoint,
+    #       '\nSecond cross point: ', secondCrossPoint)
+    # print()
 
     # Lấy 2 đoạn của 2 gen
     parent1MiddleCross = parent1[firstCrossPoint:secondCrossPoint]
@@ -31,9 +53,9 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
     drone1MiddleCross = drone1[firstCrossPoint:secondCrossPoint]
     drone2MiddleCross = drone2[firstCrossPoint:secondCrossPoint]
 
-    print('Middle gene 1: ', parent1MiddleCross)
-    print('Middle gene 2: ', parent2MiddleCross)
-    print()
+    # print('Middle gene 1: ', parent1MiddleCross)
+    # print('Middle gene 2: ', parent2MiddleCross)
+    # print()
 
     # print('parentMiddleCross', parent1MiddleCross, parent2MiddleCross)
 
@@ -47,9 +69,9 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
                    drone2MiddleCross + drone1[secondCrossPoint:])
     childDrone2 = (drone2[:firstCrossPoint] +
                    drone1MiddleCross + drone2[secondCrossPoint:])
-    print()
-    print('Temporary child 1: ', child1, '\nTemporary child 2: ', child2)
-    print()
+    # print()
+    # print('Temporary child 1: ', child1, '\nTemporary child 2: ', child2)
+    # print()
 
     # Gép các số của đoạn gen bị cắt ra theo các cặp tương ứng
     relationsWithDupes = []
@@ -57,8 +79,8 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
         relationsWithDupes.append(
             [parent2MiddleCross[i], parent1MiddleCross[i]])
 
-    print()
-    print('Pairs: ', relationsWithDupes)
+    # print()
+    # print('Pairs: ', relationsWithDupes)
 
     # Chọn lọc ra các cặp phục vụ cho việc hoán đổi
     relations = []
@@ -74,8 +96,8 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
             if (pair[0] != pair[1] and pair[0] not in parent1MiddleCross and pair[1] not in parent2MiddleCross):
                 relations.append(pair)
 
-    print('Good pairs: ', relations)
-    print()
+    # print('Good pairs: ', relations)
+    # print()
 
     # Đối sánh
     # Đoạn gen phía trước
@@ -117,31 +139,16 @@ def PMX_crossover(parent1, parent2, drone1, drone2):
     # print('Child 1: ', child1, '\nChild 2: ', child2)
     # print()
 
-    child1 = format_gene(child1)
-    child2 = format_gene(child2)
+    child1 = format_gene(child1, indexOfNegativeNum1)
+    child2 = format_gene(child2, indexOfNegativeNum2)
 
     # Trả về 2 cá thể
     return child1, child2, childDrone1, childDrone2
 
 
-def standardized_gene(parent, negativeCount):
-    for i in range(len(parent)):
-        if (parent[i] == -1):
-            parent[i] += negativeCount
-            negativeCount -= 1
-    return parent
-
-
-def format_gene(child):
-    for i in range(len(child)):
-        if (child[i] < 0):
-            child[i] = -1
-    return child
-
-
 def main():
-    print(PMX_crossover([6, 9, 7, 4, -1, 3, 8, -1, 2, 5, 10, 1],
-                        [7, 6, 9, -1, 4, 8, 3, 5, 1, -1, 2, 10],
+    print(PMX_crossover([8, 3, -1, 4, 6, -1, 7, 1, 2, 5, 10, 9],
+                        [3, 8, 10, 7, -1, 4, -1, 5, 1, 9, 2, 6],
                         [6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1],
                         [6, 9, 7, -1, 4, 3, 8, -1, 2, 5, 10, 1]))
 

@@ -1,5 +1,5 @@
 
-f = open("C:\\Users\\thinh\\OneDrive\\Tài liệu\\20221\\Tinh toan tien hoa\\Code\\solomo\\10\\C101_0.5.dat", "r")
+f = open("C:\\src\\git\\HUST\\IT4906_Evolutionary_Calculation-20221\\solomo\\50\\C101_0.5.dat", "r")
 lines = []  # mảng chứa các dòng text trong file
 
 # Đọc cả cả file dữ liệu

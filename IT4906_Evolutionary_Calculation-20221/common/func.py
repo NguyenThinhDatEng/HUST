@@ -3,6 +3,8 @@ import re
 import itertools
 import numpy as np
 
+PERMUTATIONS_LIMIT = 100
+
 # Lấy các số từ chuỗi (Phải có khoảng cách giữa chữ và số)
 
 
@@ -21,9 +23,13 @@ def getAllPermutations(array):
     # danh sách các hoán vị
     permutations = itertools.permutations(array)
     # Lấy từng hoán vị
+    count = PERMUTATIONS_LIMIT
     for perm in permutations:
         subArr = list(perm)
         output.append(subArr)
+        count -= 1
+        if (count == 0):
+            break
     # Trả về
     return output
 
